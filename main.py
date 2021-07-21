@@ -1,30 +1,42 @@
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+
 import controllers
-import algorithms
 
 app = FastAPI()
 
-@app.post("/convertAudio")
+
+@app.get('/')
+async def root():
+    return RedirectResponse(url='/docs')
+
+
+@app.post('/convertAudio')
 def convert_audio(path):
-    controllers.audio_convert(path) #'./samples/googleFemale.wav'
-    return "processed"
+    controllers.audio_convert(path)  # './samples/googleFemale.wav'
+    return 'processed'
 
-@app.post("/getTextTranscript")
+
+@app.post('/getTextTranscript')
 def word_segmentation(path):
-    return controllers.word_segmentation(path) #'./preparedAudio/selectedWord-extract.wav'
+    return controllers.word_segmentation(path)  # './preparedAudio/selectedWord-extract.wav'
 
-@app.post("/selectWord")
+
+@app.post('/selectWord')
 def audio_segmentation(start, end):
-    return controllers.audio_segmentation(float(start), float(end)) #1.92, 2.28
+    return controllers.audio_segmentation(float(start), float(end))  # 1.92, 2.28
 
-@app.post("/getFormantFrequencyRange")
+
+@app.post('/getFormantFrequencyRange')
 def get_formants_frequency_range(path):
-    return controllers.get_frequency_range(path) #'./preparedAudio/selectedWord-extract.wav'
+    return controllers.get_frequency_range(path)  # './preparedAudio/selectedWord-extract.wav'
 
-@app.post("/phonemeExtraction")
+
+@app.post('/phonemeExtraction')
 def phoneme_extraction(path, word):
-    return controllers.phoneme_extraction_test(path, word) #'./preparedAudio/selectedWord-extract.wav', "IY"
+    return controllers.phoneme_extraction_test(path, word)  # './preparedAudio/selectedWord-extract.wav', 'IY'
 
-@app.post("/findRhymings")
+
+@app.post('/findRhyming')
 def rhyme_find(word):
-    return controllers.find_rhyming_words(word) #'Some Word'
+    return controllers.find_rhyming_words(word)  # 'Some Word'

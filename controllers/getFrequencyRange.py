@@ -1,26 +1,27 @@
-import algorithms 
 import json
 
-def get_frequency_range(audio_input):
+import algorithms
 
-  #Word segmentation
-    f = open('./preparedAudio/word_transcript.json',)
+
+def get_frequency_range(audio_input):
+    # Word segmentation
+    f = open('./preparedAudio/word_transcript.json', )
     segmented_words = json.load(f)
 
-    #Extract fromants
+    # Extract formants
     formants_frequencies = algorithms.measureFormants(audio_input)
 
-    #Create time array
+    # Create time array
     time_array = []
     for i in range(len(formants_frequencies)):
-        value = formants_frequencies[i+1]['time']
+        value = formants_frequencies[i + 1]['time']
         time_array.append(value)
 
-    #Identify frequency within time frame
+    # Identify frequency within time frame
     frequency_range = {}
     count = 0
 
-    for x in range(len(segmented_words["word"])):
+    for x in range(len(segmented_words['word'])):
         segments = {}
         end = segmented_words['end'][str(x)]
         start = segmented_words['start'][str(x)]
@@ -29,13 +30,15 @@ def get_frequency_range(audio_input):
 
         for i in range(len(time_array)):
 
-            if time_array[i] <= end and time_array[i] >= start:
-                segments[count] = {'index':i ,'time': time_array[i], 'f1': formants_frequencies[i + 1]['f1'], 'f2': formants_frequencies[i + 1]['f2'], 'distance':  formants_frequencies[i + 1]['f2'] -  formants_frequencies[i + 1]['f1']}
+            if end >= time_array[i] >= start:
+                segments[count] = {'index': i, 'time': time_array[i], 'f1': formants_frequencies[i + 1]['f1'],
+                                   'f2': formants_frequencies[i + 1]['f2'],
+                                   'distance': formants_frequencies[i + 1]['f2'] - formants_frequencies[i + 1]['f1']}
                 sum_f1 = sum_f1 + formants_frequencies[i + 1]['f1']
                 sum_f2 = sum_f2 + formants_frequencies[i + 1]['f2']
                 count += 1
-    
+
     frequency_range[x] = segments
-    print("calculated frequency range")
+    print('Calculated frequency range')
 
     return frequency_range
