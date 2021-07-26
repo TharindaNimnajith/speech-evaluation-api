@@ -1,9 +1,18 @@
+import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+from starlette.middleware import Middleware
 
-import controllers
+middleware = [
+    Middleware(CORSMiddleware,
+               allow_credentials=True,
+               allow_origins=['*'],
+               allow_methods=['*'],
+               allow_headers=['*'])
+]
 
-app = FastAPI()
+app = FastAPI(middleware=middleware)
 
 
 @app.get('/')
@@ -40,3 +49,9 @@ def phoneme_extraction(path, word):
 @app.post('/findRhyming')
 def rhyme_find(word):
     return controllers.find_rhyming_words(word)  # 'Some Word'
+
+
+if __name__ == '__main__':
+    uvicorn.run(app,
+                host='127.0.0.1',
+                port=8002)
